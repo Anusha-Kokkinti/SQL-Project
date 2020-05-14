@@ -1,0 +1,46 @@
+#Display First Name and Last Name of the customers who have done shopping for more than Rs 5000
+select Cus_First,Cus_Last
+from P_Customer
+where Cus_ID in (
+select Cus_ID
+from P_Customer_PurchaseRecord
+where TotalPrice>5000)
+#Determine the Product_name, Reciept_ID, TotalPrice paid, Cus_ID having maximumpurchase records
+
+Select r.reciept_ID,r.Cus_ID,r.TotalPrice,p.Product_Name
+From P_Product p, P_Customer_PurchaseRecord r
+Where p.Product_ID=r.Product_ID
+And r.Quantity_Purchase=(Select max(Quantity_Purchase) from
+P_Customer_PurchaseRecord group by Quantity_Purchase
+having Quantity_Purchase=(Select max(Quantity_Purchase) from
+P_Customer_PurchaseRecord))
+
+#Determine the products coming from the Distribution center name starting with ‘C’
+select Product_Name
+from P_Product
+where Dep_ID in (select Dep_ID from P_Department where Store_ID in (select Store_ID
+from P_Store where Center_ID in
+(select Center_ID from P_DistributionCenter
+where Center_Name like 'C%')))
+# Write a query to display list of all products that platinum customers bought along with their first name, last name and phone number.
+
+Select p.Product_ID,p.Product_Name,c.Cus_First,c.Cus_Last,c.Cus_Phone
+from P_Product p join P_Customer_PurchaseRecord pu on p.Product_ID = pu.Product_ID
+join P_Customer c on pu.Cus_ID = c.Cus_ID join P_CustomerLoyalty l on c.Cus_ID =
+l.Cus_ID
+where l.Membership = 'Platinum
+#Display the list of cus_first , cus_last who paid highest payments
+select c.Cus_First,c.Cus_Last,pr.TotalPrice
+from P_Customer c join P_Customer_PurchaseRecord pr on c.Cus_ID = pr.Cus_ID
+join P_CustomerPayment p on p.Reciept_ID = pr.Reciept_ID
+where pr.TotalPrice in (select max(TotalPrice) from P_Customer_PurchaseRecord )
+
+#Determine the Product_name, Reciept_ID, TotalPrice paid, Cus_ID having maximumpurchase records
+
+Select r.reciept_ID,r.Cus_ID,r.TotalPrice,p.Product_Name
+From P_Product p, P_Customer_PurchaseRecord r
+Where p.Product_ID=r.Product_ID
+And r.Quantity_Purchase=(Select max(Quantity_Purchase) from
+P_Customer_PurchaseRecord group by Quantity_Purchase
+having Quantity_Purchase=(Select max(Quantity_Purchase) from
+P_Customer_PurchaseRecord))
